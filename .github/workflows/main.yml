@@ -5,23 +5,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
       - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
       
-      - name: Find and Build
+      - name: Unzip and Find Files
         run: |
-          # This finds gradlew wherever it is hiding
+          # 1. Unzip the file you uploaded
+          unzip *.zip
+          # 2. Find where gradlew is hiding and move there
           GRADLEW_PATH=$(find . -name gradlew | head -n 1)
           cd $(dirname $GRADLEW_PATH)
+          # 3. Make it executable
           chmod +x gradlew
+          # 4. Start the build
           ./gradlew assembleDebug
           
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: AppLock-AntiBypass
+          name: AppLock-Fixed
           path: "**/app-debug.apk"
           
